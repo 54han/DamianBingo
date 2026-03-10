@@ -3,646 +3,691 @@
 <head>
 <meta charset="UTF-8">
 <title>Chłopaki przepierdalają faceita - BINGO</title>
-
 <style>
 
-html,body{
-margin:0;
-padding:0;
-overflow-x:hidden;
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  --bg:        #f7f7f7;
+  --surface:   #ffffff;
+  --border:    #dddddd;
+  --text:      #111111;
+  --text-dim:  #333333;
+  --hover:     #f3f3f3;
+  --marked:    #eeeeee;
+  --bar-bg:    #dddddd;
+  --btn-bg:    #e53935;
+  --btn-hover: #c62828;
+  --btn-sm:    #666666;
+  --btn-sm-hv: #444444;
+  --counter-bg: rgba(255,255,255,0.75);
+  --progress:  #4caf50;
+  --rare-title: #b8860b;
+  --rare-surface: #fffde7;
+  --rare-border: #f9a825;
+  --rare-marked: #fff9c4;
 }
 
-body{
-background:#f7f7f7;
-font-family:Arial, sans-serif;
-text-align:center;
-user-select:none;
+body.dark {
+  --bg:        #0f1724;
+  --surface:   #1b2433;
+  --border:    #2f3a4d;
+  --text:      #e4e8f0;
+  --text-dim:  #e4e8f0;
+  --hover:     #263246;
+  --marked:    #2a3447;
+  --bar-bg:    #2a3447;
+  --btn-bg:    #394b66;
+  --btn-hover: #2f3d55;
+  --btn-sm:    #394b66;
+  --btn-sm-hv: #2f3d55;
+  --counter-bg: rgba(20,30,50,0.8);
+  --rare-title: #ffd54f;
+  --rare-surface: #1e1a05;
+  --rare-border: #b8860b;
+  --rare-marked: #2a2500;
 }
 
-h1{
-margin-top:20px;
+/* ── Reset & Base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+body { padding-bottom: 60px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  text-align: center;
+  user-select: none;
+  transition: background 0.3s, color 0.3s;
 }
 
-.topBar{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:20px;
-margin-top:10px;
+h1 { margin-top: 20px; }
+
+.topBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 10px;
 }
 
-button{
-padding:10px 16px;
-font-size:16px;
-cursor:pointer;
-background:#e53935;
-color:white;
-border:none;
-border-radius:6px;
+/* ── Buttons ───────────────────────────────────────────────── */
+button {
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  background: var(--btn-bg);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+button:hover { background: var(--btn-hover); }
+
+.btn-sm {
+  font-size: 12px;
+  padding: 2px 6px;
+  background: var(--btn-sm);
+}
+.btn-sm:hover { background: var(--btn-sm-hv); }
+
+/* ── Progress Bar ──────────────────────────────────────────── */
+#progressContainer { width: 300px; margin: 10px auto; }
+
+#progressBar {
+  height: 12px;
+  background: var(--bar-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: background 0.3s;
 }
 
-button:hover{
-background:#c62828;
+#progressFill {
+  height: 100%;
+  width: 0%;
+  background: var(--progress);
+  transition: width 0.3s ease;
 }
 
-#progressContainer{
-width:300px;
-margin:10px auto;
+#progressText { margin-top: 6px; font-size: 14px; }
+
+/* ── Tables wrapper ────────────────────────────────────────── */
+#tablesWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 150px;
+  flex-wrap: wrap;
+  margin: 20px auto 40px;
 }
 
-#progressBar{
-height:12px;
-background:#ddd;
-border-radius:6px;
-overflow:hidden;
+/* ── Tables ────────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+  transition: background 0.3s;
 }
 
-#progressFill{
-height:100%;
-width:0%;
-background:#4caf50;
+td {
+  border: 1px solid var(--border);
+  width: 160px;
+  height: 100px;
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  position: relative;
+  transition: background 0.15s, border-color 0.3s;
 }
 
-#progressText{
-margin-top:6px;
-font-size:14px;
+.subtitle {
+  font-size: 22px;
+  font-weight: bold;
+  height: 40px;
+  background: var(--surface);
 }
 
-table{
-border-collapse:collapse;
-margin:20px auto;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
-border-radius:10px;
-overflow:hidden;
-background:white;
+/* ── RARE table ────────────────────────────────────────────── */
+#rareTable {
+  box-shadow: 0 10px 30px rgba(184,134,11,0.35);
 }
 
-td{
-border:1px solid #ddd;
-width:160px;
-height:100px;
-text-align:center;
-vertical-align:middle;
-padding:10px;
-position:relative;
+#rareTable td {
+  border-color: var(--rare-border);
+  background: var(--rare-surface);
+  width: 180px;
+  transition: background 0.15s, border-color 0.3s;
 }
 
-.title{
-font-size:28px;
-font-weight:bold;
-height:50px;
-background:#fafafa;
+#rareTable .subtitle {
+  color: var(--rare-title);
+  font-size: 18px;
+  letter-spacing: 5px;
+  border-bottom: 2px solid var(--rare-border);
 }
 
-.subtitle{
-font-size:22px;
-font-weight:bold;
-height:40px;
-background:#fafafa;
+#rareTable .cell:hover        { background: var(--hover); }
+#rareTable .cell.marked       { background: var(--rare-marked); }
+#rareTable .cell.marked::after { color: #b8860b; }
+
+/* ── Cell States ───────────────────────────────────────────── */
+.cell { cursor: pointer; }
+.cell:hover  { background: var(--hover);  }
+.cell.marked { background: var(--marked); }
+
+.cell.marked::after {
+  content: "X";
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 120px;
+  color: red;
+  opacity: 0.75;
+  font-weight: bold;
+  pointer-events: none;
+  animation: popX 0.25s ease;
 }
 
-.cell{
-cursor:pointer;
-transition:background 0.15s;
+@keyframes popX {
+  0%   { transform: translate(-50%,-50%) scale(0.2); }
+  80%  { transform: translate(-50%,-50%) scale(1.2); }
+  100% { transform: translate(-50%,-50%) scale(1);   }
 }
 
-.cell:hover{
-background:#f3f3f3;
+/* ── Counter Elements ──────────────────────────────────────── */
+.counter {
+  position: absolute;
+  bottom: 6px; right: 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: bold;
+  background: var(--counter-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
-.cell.marked{
-background:#eeeeee;
+.counterButtons {
+  position: absolute;
+  bottom: 5px; left: 5px;
+  display: flex;
+  gap: 4px;
 }
 
-.cell.marked::after{
-content:"X";
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-size:120px;
-color:red;
-opacity:0.75;
-font-weight:bold;
-pointer-events:none;
-animation:popX 0.25s ease;
+/* ── Bingo Message ─────────────────────────────────────────── */
+#bingoMessage {
+  font-size: 50px;
+  font-weight: bold;
+  margin-top: 10px;
+  display: none;
 }
 
-@keyframes popX{
-0%{transform:translate(-50%,-50%) scale(0.2)}
-80%{transform:translate(-50%,-50%) scale(1.2)}
-100%{transform:translate(-50%,-50%) scale(1)}
+#bingoMessage.normal {
+  color: #e53935;
+  animation: pulse 1s infinite;
 }
 
-.counter{
-position:absolute;
-bottom:6px;
-right:8px;
-font-size:13px;
-color:#333;
-font-weight:bold;
-background:rgba(255,255,255,0.75);
-padding:2px 6px;
-border-radius:4px;
+#bingoMessage.super {
+  color: transparent;
+  background: linear-gradient(90deg,#ffd700,#ff8c00,#fffacd,#ffd700,#ff8c00,#ffd700);
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 16px #ffd700) drop-shadow(0 0 40px #ff8c00);
+  animation: superPulse 0.75s infinite, goldShimmer 1.8s linear infinite;
 }
 
-.counterButtons{
-position:absolute;
-bottom:5px;
-left:5px;
-display:flex;
-gap:4px;
+@keyframes pulse {
+  0%, 100% { transform: scale(1);    }
+  50%       { transform: scale(1.15); }
+}
+@keyframes superPulse {
+  0%, 100% { transform: scale(1);    }
+  50%       { transform: scale(1.25); }
+}
+@keyframes goldShimmer {
+  0%   { background-position: 0%   center; }
+  100% { background-position: 400% center; }
 }
 
-.counterButtons button{
-font-size:12px;
-padding:2px 6px;
-background:#666;
+/* ── Flash overlay ─────────────────────────────────────────── */
+#flashOverlay {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 998;
+  transition: opacity 0.08s;
 }
 
-.counterButtons button:hover{
-background:#444;
+/* ── Confetti Canvas ───────────────────────────────────────── */
+#confetti {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 999;
 }
 
-#bingoMessage{
-font-size:50px;
-font-weight:bold;
-color:#e53935;
-margin-top:10px;
-display:none;
-animation:pulse 1s infinite;
+/* ── Theme Toggle Switch ───────────────────────────────────── */
+.themeSwitch { position: relative; display: inline-block; width: 60px; height: 30px; }
+.themeSwitch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #ffd54f;
+  border-radius: 34px;
+  transition: background 0.4s;
 }
-
-@keyframes pulse{
-0%{transform:scale(1)}
-50%{transform:scale(1.15)}
-100%{transform:scale(1)}
+.slider::before {
+  content: "☀️";
+  position: absolute;
+  height: 24px; width: 24px;
+  left: 3px; bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: transform 0.4s;
 }
+input:checked + .slider { background: #1e2a3a; }
+input:checked + .slider::before { transform: translateX(30px); content: "🌙"; }
 
-#confetti{
-position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
-pointer-events:none;
-z-index:999;
-}
-
-/* SWITCH */
-
-.themeSwitch{
-position:relative;
-display:inline-block;
-width:60px;
-height:30px;
-}
-
-.themeSwitch input{
-opacity:0;
-width:0;
-height:0;
-}
-
-.slider{
-position:absolute;
-cursor:pointer;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:#ffd54f;
-transition:.4s;
-border-radius:34px;
-}
-
-.slider:before{
-position:absolute;
-content:"☀️";
-height:24px;
-width:24px;
-left:3px;
-bottom:3px;
-background:white;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:14px;
-transition:.4s;
-}
-
-input:checked + .slider{
-background:#1e2a3a;
-}
-
-input:checked + .slider:before{
-transform:translateX(30px);
-content:"🌙";
-}
-
-/* DARK MODE */
-
-body.dark{
-background:#0f1724;
-color:#e4e8f0;
-}
-
-body.dark table{
-background:#1b2433;
-}
-
-body.dark .subtitle{
-background:#1b2433;
-color:#e4e8f0;
-}
-
-body.dark td{
-border:1px solid #2f3a4d;
-}
-
-body.dark .cell:hover{
-background:#263246;
-}
-
-body.dark .cell.marked{
-background:#2a3447;
-}
-
-body.dark .counter{
-background:rgba(20,30,50,0.8);
-color:#e4e8f0;
-}
-
-body.dark #progressBar{
-background:#2a3447;
-}
-
-body.dark button{
-background:#394b66;
-}
-
-body.dark button:hover{
-background:#2f3d55;
-}
-
-@media(max-width:900px){
-
-td{
-width:120px;
-height:90px;
-font-size:14px;
-}
-
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 1200px) { #tablesWrapper { gap: 40px; } }
+@media (max-width: 900px) {
+  td { width: 120px; height: 90px; font-size: 14px; }
+  #rareTable td { width: 140px; }
+  #tablesWrapper { gap: 20px; }
 }
 
 </style>
 </head>
-
 <body>
 
-<h1>Damian gra faceita</h1>
+<h1>Chłopaki przepierdalają gra faceita</h1>
 
 <div class="topBar">
-
-<button id="reset">RESET BINGO</button>
-
-<label class="themeSwitch">
-<input type="checkbox" id="themeToggle">
-<span class="slider"></span>
-</label>
-
+  <button id="btnReset">RESET BINGO</button>
+  <label class="themeSwitch">
+    <input type="checkbox" id="themeToggle">
+    <span class="slider"></span>
+  </label>
 </div>
 
 <div id="progressContainer">
-
-<div id="progressBar">
-<div id="progressFill"></div>
+  <div id="progressBar"><div id="progressFill"></div></div>
+  <div id="progressText">0 / 25</div>
 </div>
 
-<div id="progressText">0 / 25</div>
+<div id="tablesWrapper">
+  <table id="mainTable">
+    <tr><td class="subtitle" colspan="5">BINGO</td></tr>
+    <tbody id="board"></tbody>
+  </table>
 
+  <table id="rareTable">
+    <tr><td class="subtitle">✦ RARE ✦</td></tr>
+    <tbody id="rareBoard"></tbody>
+  </table>
 </div>
 
-<table>
-
-<tr>
-<td class="subtitle" colspan="5">BINGO</td>
-</tr>
-
-<tbody id="board"></tbody>
-
-</table>
-
-<div id="bingoMessage">BINGO!</div>
-
+<div id="bingoMessage" class="normal">BINGO!</div>
+<div id="flashOverlay"></div>
 <canvas id="confetti"></canvas>
-
 <audio id="bingoSound" src="bingo.mp3"></audio>
+<audio id="rareSound"  src="rarenew.mp3"></audio>
 
 <script>
-
-const cellsContent=[
-
-'Komplementowanie przeciwnika że jest dobry/mocny/niesamowity',
-'*Randomowe darcie pizdy po wyjebce*',
-'Narzekanie na siebie że jest chujowy',
-'"A/B czyste"',
-'"O co tu kurwa chodzi"',
-'*westchnienie*',
-'"Jak on nie zginął"',
-'*Bekanie*',
-'"Zaraz się zrzygam"',
-'"najs" x15',
-'*gada coś ale push to talk mu przerywa*',
-'Narzekanie na gre że jest rozjebana/chujowa',
-'"ja pierdole" x15',
-'*śmiech na głos*',
-'Zabranie komuś AWP / pytanie czy kupić komus AWP',
-'Sprawdzanie przeciwników czy odjebani albo smurfy',
-'"Low ma / obity"',
-'"Powinienem go zabić"',
-'"Daj" - na pytanie czy chce flasha',
-'"Na blisko"',
-'"Short" x15',
-'Gra Dual Beretty',
-'"nie wiem"',
-'"Po głowie"',
-'Narzekanie na własną taktykę'
-
+/* ── Data ───────────────────────────────────────────────────── */
+const CELLS_CONTENT = [
+  'Komplementowanie przeciwnika że jest dobry/mocny/niesamowity',
+  '*Randomowe darcie pizdy po wyjebce*',
+  'Narzekanie na siebie że jest chujowy',
+  '"A/B czyste"',
+  '"O co tu kurwa chodzi"',
+  '*westchnienie*',
+  '"Debil" x5',
+  '"Przepraszam"',
+  '"Zaraz się zrzygam"',
+  '"NAJS" x5',
+  '"Spalili"',
+  'Narzekanie na gre że jest rozjebana/chujowa',
+  '"Ja pierdole" x10',
+  '*śmiech na głos*',
+  'Zabranie komuś AWP / pytanie czy kupić komus AWP',
+  'Sprawdzanie przeciwników czy odjebani albo smurfy',
+  '"Low ma / obity"',
+  '"Powinienem go zabić" / "Jak on nie zginął"',
+  '"Daj" - na pytanie czy chce flasha',
+  '"Na blisko"',
+  '"Short" x15',
+  'Damian gra Dual Beretty',
+  '"Nie wiem"',
+  '"Po głowie / po bani"',
+  'Narzekanie na własną taktykę',
 ];
 
-const board=document.getElementById("board");
-const bingoSound=document.getElementById("bingoSound");
+const RARE_CONTENT = ['"Ferrari peek"','*BEKANIE*','"Nie mają kasy"','"Rush B"','Ktoś robi ACE'];
 
-let state=JSON.parse(localStorage.getItem("bingoState"));
-
-function shuffle(array){
-for(let i=array.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1));
-[array[i],array[j]]=[array[j],array[i]];
-}
-while(array.length<25)array.push("");
-return array;
-}
-
-if(!state){
-state={
-cells:shuffle([...cellsContent]),
-marked:Array(25).fill(false),
-counters:Array(25).fill(0)
-};
+/* ── State ──────────────────────────────────────────────────── */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  while (a.length < 25) a.push('');
+  return a;
 }
 
-function save(){
-localStorage.setItem("bingoState",JSON.stringify(state));
+function freshState() {
+  return {
+    cells:      shuffle(CELLS_CONTENT),
+    marked:     Array(25).fill(false),
+    counters:   Array(25).fill(0),
+    rareMarked: Array(5).fill(false),
+  };
 }
 
-function updateProgress(){
-
-let done=state.marked.filter(v=>v).length;
-
-document.getElementById("progressText").innerText=done+" / 25";
-
-document.getElementById("progressFill").style.width=(done/25*100)+"%";
-
+function save() {
+  localStorage.setItem('bingoState', JSON.stringify(state));
 }
 
-function render(){
-
-board.innerHTML="";
-
-for(let r=0;r<5;r++){
-
-let tr=document.createElement("tr");
-
-for(let c=0;c<5;c++){
-
-let i=r*5+c;
-
-let td=document.createElement("td");
-td.className="cell";
-
-let text=state.cells[i];
-let match=text.match(/x(\d+)/i);
-
-if(match){
-
-let target=parseInt(match[1]);
-text=text.replace(/x\d+/i,"");
-
-td.innerHTML=text;
-
-let counter=document.createElement("div");
-counter.className="counter";
-
-let buttons=document.createElement("div");
-buttons.className="counterButtons";
-
-let plus=document.createElement("button");
-plus.innerText="+";
-
-let minus=document.createElement("button");
-minus.innerText="-";
-
-buttons.appendChild(minus);
-buttons.appendChild(plus);
-
-td.appendChild(counter);
-td.appendChild(buttons);
-
-function update(){
-
-if(state.counters[i]>target)state.counters[i]=target;
-
-counter.innerText=state.counters[i]+"/"+target;
-
-if(state.counters[i]>=target){
-state.marked[i]=true;
-td.classList.add("marked");
-}else{
-state.marked[i]=false;
-td.classList.remove("marked");
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('bingoState'));
+    if (s && s.cells && s.marked && s.counters) {
+      if (!s.rareMarked) s.rareMarked = Array(5).fill(false);
+      return s;
+    }
+  } catch {}
+  return freshState();
 }
 
-updateProgress();
-checkBingo();
-save();
+const state = loadState();
 
+/* ── DOM Refs ───────────────────────────────────────────────── */
+const board        = document.getElementById('board');
+const rareBoard    = document.getElementById('rareBoard');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const bingoMessage = document.getElementById('bingoMessage');
+const flashOverlay = document.getElementById('flashOverlay');
+const bingoSound   = document.getElementById('bingoSound');
+const rareSound    = document.getElementById('rareSound');
+const canvas       = document.getElementById('confetti');
+const ctx          = canvas.getContext('2d');
+
+/* ── Progress ───────────────────────────────────────────────── */
+function updateProgress() {
+  const done = state.marked.filter(Boolean).length;
+  progressText.textContent = `${done} / 25`;
+  progressFill.style.width = `${(done / 25) * 100}%`;
 }
 
-plus.onclick=(e)=>{
-e.stopPropagation();
-if(state.counters[i]<target){
-state.counters[i]++;
-update();
-}
-};
+/* ── Bingo Check ────────────────────────────────────────────── */
+let bingoPlayed      = false;
+let superBingoPlayed = false;
 
-minus.onclick=(e)=>{
-e.stopPropagation();
-if(state.counters[i]>0){
-state.counters[i]--;
-update();
-}
-};
+function checkBingo() {
+  const mainDone = state.marked.every(Boolean);
+  const rareDone = state.rareMarked.every(Boolean);
 
-td.onclick=()=>{
-if(state.counters[i]<target){
-state.counters[i]++;
-update();
-}
-};
-
-update();
-
-}else{
-
-td.innerHTML=text;
-
-if(state.marked[i])td.classList.add("marked");
-
-td.onclick=()=>{
-state.marked[i]=!state.marked[i];
-td.classList.toggle("marked");
-updateProgress();
-checkBingo();
-save();
-};
-
+  if (mainDone && rareDone) {
+    bingoMessage.textContent    = '★ SUPER BINGO ★';
+    bingoMessage.className      = 'super';
+    bingoMessage.style.display  = 'block';
+    if (!superBingoPlayed) {
+      rareSound.play().catch(() => {});
+      startSuperConfetti();
+      triggerFlash();
+      superBingoPlayed = true;
+    }
+    bingoPlayed = true;
+  } else if (mainDone) {
+    bingoMessage.textContent    = 'BINGO!';
+    bingoMessage.className      = 'normal';
+    bingoMessage.style.display  = 'block';
+    if (!bingoPlayed) {
+      bingoSound.play().catch(() => {});
+      startConfetti(false);
+      bingoPlayed = true;
+    }
+    superBingoPlayed = false;
+  } else {
+    bingoMessage.style.display  = 'none';
+    bingoPlayed      = false;
+    superBingoPlayed = false;
+  }
 }
 
-tr.appendChild(td);
+/* ── Cell Builders ──────────────────────────────────────────── */
+function buildCounterCell(td, i, target) {
+  const counter = document.createElement('div');
+  counter.className = 'counter';
 
+  const buttons = document.createElement('div');
+  buttons.className = 'counterButtons';
+
+  const minus = document.createElement('button');
+  minus.textContent = '−';
+  minus.className = 'btn-sm';
+
+  const plus = document.createElement('button');
+  plus.textContent = '+';
+  plus.className = 'btn-sm';
+
+  buttons.append(minus, plus);
+  td.append(counter, buttons);
+
+  function refresh() {
+    state.counters[i] = Math.min(state.counters[i], target);
+    counter.textContent = `${state.counters[i]}/${target}`;
+    const done = state.counters[i] >= target;
+    state.marked[i] = done;
+    td.classList.toggle('marked', done);
+    updateProgress();
+    checkBingo();
+    save();
+  }
+
+  const inc = (e) => { e.stopPropagation(); if (state.counters[i] < target) { state.counters[i]++; refresh(); } };
+  const dec = (e) => { e.stopPropagation(); if (state.counters[i] > 0)      { state.counters[i]--; refresh(); } };
+
+  plus.addEventListener('click', inc);
+  minus.addEventListener('click', dec);
+  td.addEventListener('click', inc);
+
+  refresh();
 }
 
-board.appendChild(tr);
-
+function buildToggleCell(td, i) {
+  if (state.marked[i]) td.classList.add('marked');
+  td.addEventListener('click', () => {
+    state.marked[i] = !state.marked[i];
+    td.classList.toggle('marked', state.marked[i]);
+    updateProgress();
+    checkBingo();
+    save();
+  });
 }
 
-updateProgress();
-checkBingo();
-
+function buildRareCell(td, i) {
+  if (state.rareMarked[i]) td.classList.add('marked');
+  td.addEventListener('click', () => {
+    state.rareMarked[i] = !state.rareMarked[i];
+    td.classList.toggle('marked', state.rareMarked[i]);
+    checkBingo();
+    save();
+  });
 }
 
-let bingoPlayed=false;
+/* ── Render ─────────────────────────────────────────────────── */
+function render() {
+  board.innerHTML = '';
+  for (let r = 0; r < 5; r++) {
+    const tr = document.createElement('tr');
+    for (let c = 0; c < 5; c++) {
+      const i   = r * 5 + c;
+      const td  = document.createElement('td');
+      td.className = 'cell';
+      const raw   = state.cells[i];
+      const match = raw.match(/x(\d+)/i);
+      if (match) {
+        td.innerHTML = raw.replace(/x\d+/i, '');
+        buildCounterCell(td, i, parseInt(match[1]));
+      } else {
+        td.innerHTML = raw;
+        buildToggleCell(td, i);
+      }
+      tr.appendChild(td);
+    }
+    board.appendChild(tr);
+  }
 
-function checkBingo(){
+  rareBoard.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.className = 'cell';
+    td.textContent = RARE_CONTENT[i];
+    buildRareCell(td, i);
+    tr.appendChild(td);
+    rareBoard.appendChild(tr);
+  }
 
-if(state.marked.every(v=>v)){
-
-document.getElementById("bingoMessage").style.display="block";
-
-if(!bingoPlayed){
-bingoSound.play();
-startConfetti();
-bingoPlayed=true;
+  updateProgress();
+  checkBingo();
 }
 
-}else{
+/* ── Reset ──────────────────────────────────────────────────── */
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (!confirm('Zresetować planszę?')) return;
+  const fresh      = freshState();
+  state.cells      = fresh.cells;
+  state.marked     = fresh.marked;
+  state.counters   = fresh.counters;
+  state.rareMarked = fresh.rareMarked;
+  bingoPlayed      = false;
+  superBingoPlayed = false;
+  particles        = [];
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  localStorage.removeItem('bingoState');
+  render();
+});
 
-document.getElementById("bingoMessage").style.display="none";
-bingoPlayed=false;
+/* ── Confetti ───────────────────────────────────────────────── */
+let particles   = [];
+let animRunning = false;
 
-}
-
-}
-
-document.getElementById("reset").onclick=()=>{
-
-if(confirm("Zresetować planszę?")){
-localStorage.removeItem("bingoState");
-location.reload();
-}
-
-};
-
-const canvas=document.getElementById("confetti");
-const ctx=canvas.getContext("2d");
-
-function resizeCanvas(){
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-}
-
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
-window.addEventListener("resize",resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
 
-let confetti=[];
+const GOLD = ['#ffd700','#ffec6e','#fff176','#ffe082','#ff8c00','#ffab40','#ffffff','#fffacd'];
 
-function startConfetti(){
+function makeParticle(sup) {
+  return {
+    x:     Math.random() * canvas.width,
+    y:     Math.random() * -(sup ? canvas.height * 1.5 : canvas.height),
+    size:  sup ? Math.random() * 18 + 8 : Math.random() * 8 + 4,
+    speed: sup ? Math.random() * 5 + 2  : Math.random() * 3 + 2,
+    angle: Math.random() * Math.PI * 2,
+    spin:  (Math.random() - 0.5) * (sup ? 0.12 : 0.2),
+    drift: (Math.random() - 0.5) * (sup ? 2.5 : 0.5),
+    color: sup ? GOLD[Math.floor(Math.random() * GOLD.length)] : `hsl(${Math.random()*360},80%,60%)`,
+    shape: sup ? ['rect','circle','star'][Math.floor(Math.random()*3)] : 'rect',
+    glow:  sup,
+  };
+}
 
-confetti=[];
+function startConfetti(sup) {
+  const count = sup ? 600 : 250;
+  particles = particles.concat(Array.from({ length: count }, () => makeParticle(sup)));
+  if (!animRunning) animateConfetti();
+  setTimeout(() => { particles = []; }, sup ? 13000 : 7000);
+}
 
-for(let i=0;i<250;i++){
+function startSuperConfetti() {
+  particles = [];
+  startConfetti(true);
+  setTimeout(() => startConfetti(true), 1800);
+  setTimeout(() => startConfetti(true), 4000);
+}
 
-confetti.push({
-x:Math.random()*canvas.width,
-y:Math.random()*-canvas.height,
-size:Math.random()*8+4,
-speed:Math.random()*3+2,
-angle:Math.random()*360,
-spin:(Math.random()-0.5)*0.2,
-color:`hsl(${Math.random()*360},80%,60%)`
+function drawStar(r) {
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const a   = (i * Math.PI) / 5 - Math.PI / 2;
+    const rad = i % 2 === 0 ? r : r / 2.5;
+    i === 0 ? ctx.moveTo(Math.cos(a)*rad, Math.sin(a)*rad)
+            : ctx.lineTo(Math.cos(a)*rad, Math.sin(a)*rad);
+  }
+  ctx.closePath();
+  ctx.fill();
+}
+
+function animateConfetti() {
+  animRunning = true;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (const p of particles) {
+    p.y += p.speed;
+    p.x += p.drift;
+    p.angle += p.spin;
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.angle);
+    ctx.fillStyle = p.color;
+    if (p.glow) { ctx.shadowColor = p.color; ctx.shadowBlur = 14; }
+
+    if      (p.shape === 'circle') { ctx.beginPath(); ctx.arc(0,0,p.size/2,0,Math.PI*2); ctx.fill(); }
+    else if (p.shape === 'star')   { drawStar(p.size / 2); }
+    else                           { ctx.fillRect(-p.size/2, -p.size*0.25, p.size, p.size*0.5); }
+
+    ctx.restore();
+  }
+
+  particles = particles.filter(p => p.y < canvas.height + 60);
+
+  if (particles.length > 0) requestAnimationFrame(animateConfetti);
+  else { animRunning = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+}
+
+/* ── Flash ──────────────────────────────────────────────────── */
+function triggerFlash() {
+  [0, 120, 280, 480, 750, 1100].forEach(delay => {
+    setTimeout(() => {
+      flashOverlay.style.opacity = '0.9';
+      setTimeout(() => { flashOverlay.style.opacity = '0'; }, 80);
+    }, delay);
+  });
+}
+
+/* ── Theme Toggle ───────────────────────────────────────────── */
+const themeToggle = document.getElementById('themeToggle');
+
+if (localStorage.getItem('theme') === 'dark') {
+  document.body.classList.add('dark');
+  themeToggle.checked = true;
+}
+
+themeToggle.addEventListener('change', () => {
+  const dark = themeToggle.checked;
+  document.body.classList.toggle('dark', dark);
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
 });
 
-}
-
-animateConfetti();
-
-setTimeout(()=>confetti=[],7000);
-
-}
-
-function animateConfetti(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-confetti.forEach(p=>{
-
-p.y+=p.speed;
-p.angle+=p.spin;
-
-ctx.save();
-ctx.translate(p.x,p.y);
-ctx.rotate(p.angle);
-
-ctx.fillStyle=p.color;
-ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
-
-ctx.restore();
-
-});
-
-if(confetti.length>0)requestAnimationFrame(animateConfetti);
-
-}
-
-const themeToggle=document.getElementById("themeToggle");
-
-let savedTheme=localStorage.getItem("theme");
-
-if(savedTheme==="dark"){
-document.body.classList.add("dark");
-themeToggle.checked=true;
-}
-
-themeToggle.addEventListener("change",()=>{
-
-if(themeToggle.checked){
-document.body.classList.add("dark");
-localStorage.setItem("theme","dark");
-}else{
-document.body.classList.remove("dark");
-localStorage.setItem("theme","light");
-}
-
-});
-
+/* ── Init ───────────────────────────────────────────────────── */
 render();
-
 </script>
-
 </body>
 </html>
-
